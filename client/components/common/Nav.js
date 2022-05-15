@@ -20,8 +20,8 @@ const HomeIcon = createSvgIcon(
 );
 
 const basicSettings = {
-    subTitles: [],
-    urls: []
+    subTitles: ['레시피', '레시피 추가'],
+    urls: ['/recipe', '/recipe/new']
 };
 
 export function Nav() {
@@ -33,11 +33,9 @@ export function Nav() {
             dispatch(loginRequest(JSON.parse(loginedUser)));
         }
     }, [dispatch]);
+    // const loginUser = localStorage.getItem("loginUser");
 
-    const {loginUser} = useSelector(state => {
-        console.log(state);
-        return state.login
-    })
+    const {loginUser} = useSelector(state => state.login);
     const [imageInfos, setImageInfos] = useState({
         imageUrl: 'https://as2.ftcdn.net/v2/jpg/01/85/61/65/1000_F_185616556_uCc1J5d5GNfRH6ErgP1G' +
                 '8x8ORLeG25en.jpg',
@@ -72,7 +70,9 @@ export function Nav() {
                 subTitles: [
                     '회원가입', '로그인'
                 ],
-                urls: ["/auth/register", "/auth/login"]
+                urls: [
+                    "/auth/register", "/auth/login"
+                ]
             })
             setImageInfos({
                 imageUrl: 'https://as2.ftcdn.net/v2/jpg/01/85/61/65/1000_F_185616556_uCc1J5d5GNfRH6ErgP1G' +
@@ -82,9 +82,11 @@ export function Nav() {
         } else {
             setUserUrls({
                 subTitles: [
-                    "프로필", "정보수정", "회원탈퇴"
+                    // "프로필", "정보수정", "회원탈퇴"
                 ],
-                urls: ["/user/profile", "/user/modifyUser", "/auth/delUser"]
+                urls: [
+                    // "/user/profile", "/user/modifyUser", "/auth/delUser"
+                ]
             })
             setImageInfos(
                 {imageUrl: 'https://www.w3schools.com/howto/img_avatar.png', imageTitle: 'users'}

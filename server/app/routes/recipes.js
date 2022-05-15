@@ -24,6 +24,9 @@ app.get('/', cors(corsOptions), passport.authenticate('jwt', {session: false}), 
 app.get('/:id', cors(corsOptions), passport.authenticate('jwt', {session: false}), (req, res) => {
     RecipeService().getRecipeById(req, res)
 });
+app.delete('/:id', cors(corsOptions), passport.authenticate('jwt', {session: false}), (req, res) => {
+    RecipeService().delete(req, res)
+});
 
 app.post(['/', '/new'], cors(corsOptions), 
 passport.authenticate('jwt', {session: false}), 

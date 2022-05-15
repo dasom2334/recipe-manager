@@ -5,6 +5,7 @@ import {Footer, Header, Nav} from "@/components";
 import {wrapper} from "@/modules/store";
 import withReduxSaga from 'next-redux-saga';
 import {useSelector, useDispatch} from 'react-redux';
+import "@/styles/main.scss";
 
 const App = ({ Component  }) => {
   return  <>

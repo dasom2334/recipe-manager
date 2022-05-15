@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
-import {useDispatch, connect} from 'react-redux';
-import {recipeAddRequest} from '@/modules/recipe/recipe';
+import React, {useState, useEffect} from 'react';
+import {useSelector, useDispatch, connect} from 'react-redux';
+import {recipeUpdateRequest, recipeReadRequest} from '@/modules/recipe/recipe';
 import {Form} from '@/components/recipe/Form';
+import Router, { useRouter } from 'next/router'
 
 const RecipePage = () => {
     const [recipe, setRecipe] = useState({
@@ -13,7 +14,6 @@ const RecipePage = () => {
         cooking_steps: [],
         // materials_video_path: '',
         status:''
-
     })
     
     const [ingredient, setIngredient] = useState([{
@@ -33,6 +33,15 @@ const RecipePage = () => {
         // step_video_path: '',
     }]);
     const dispatch = useDispatch()
+    const router = useRouter()
+    const { id } = router.query
+	useEffect(() => {
+		dispatch(recipeReadRequest({id:id}));
+	}, [dispatch]);
+    const data = useSelector(state =>{
+        console.log(state)
+        return state.recipe.data;
+    })
     const onChange = e => {
         e.preventDefault()
         const {name, value} = e.target;
@@ -71,10 +80,10 @@ const RecipePage = () => {
             cooking_seasoning: [...seasoning],
             cooking_steps: [...step],
         };
-        dispatch(recipeAddRequest(sendRecipe))
+        dispatch(recipeUpdateRequest(sendRecipe))
     }
-    return (<Form onChange={onChange} onSubmit={onSubmit}/>);
+    return (<Form onChange={onChange} onSubmit={onSubmit} recipe={data}/>);
 };
 const mapStateToProps = state => ({});
-const recipeActions = {recipeAddRequest}
+const recipeActions = {recipeUpdateRequest}
 export default connect(mapStateToProps, recipeActions)(RecipePage);

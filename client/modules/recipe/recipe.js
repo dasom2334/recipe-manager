@@ -45,9 +45,7 @@ export function* recipeSaga() {
 }
 function* createRecipe(action) {
     try {
-        console.log('hihi22');
         const response = yield call(recipeCreateAPI, action.payload)
-        console.log(response);
         yield put({type: RECIPE_CREATE_REQUEST_SUCCESS, payload: response.data})
         yield put((window.location.href = "/recipe"));
     } catch (error) {
@@ -57,15 +55,16 @@ function* createRecipe(action) {
 function* readRecipe(action) {
     try {
         const response = yield call(
-            (action.payload.id)
-                ? recipeReadAPI
-                : recipesReadAPI,
+            (action.payload.id === null)
+                ? recipesReadAPI
+                : recipeReadAPI,
             action.payload
         )
         yield put({type: RECIPE_READ_REQUEST_SUCCESS, payload: response.data})
     } catch (error) {
         yield put({type: RECIPE_READ_REQUEST_FAILURE, payload: error.message})
     }
+    console.log('hi')
 }
 function* updateRecipe(action) {
     try {
@@ -88,7 +87,6 @@ function* deleteRecipe(action) {
 
 const recipeCreateAPI = payload => {
     const user = JSON.parse(localStorage.getItem("loginUser"));
-    console.log(user.token);
     return axios.post(`${SERVER}/recipe`, payload, {
         headers: {
             ...headers,
@@ -105,7 +103,7 @@ const recipeReadAPI = payload => {
         }
     })
 }
-const recipesReadAPI = payload => {
+const recipesReadAPI = () => {
     const user = JSON.parse(localStorage.getItem("loginUser"));
     return axios.get(`${SERVER}/recipe`, {
         headers: {
@@ -141,23 +139,24 @@ const recipe = handleActions({
         ...state,
         payload: action.payload
     }),
-    [RECIPE_READ_REQUEST]: (state, _action) => ({
+    [RECIPE_READ_REQUEST]: (state, action) => ({
         ...state,
         payload: action.payload
     }),
-    [RECIPE_UPDATE_REQUEST]: (state, _action) => ({
+    [RECIPE_UPDATE_REQUEST]: (state, action) => ({
         ...state,
         payload: action.payload
     }),
-    [RECIPE_DELETE_REQUEST]: (state, _action) => ({
+    [RECIPE_DELETE_REQUEST]: (state, action) => ({
         ...state,
         payload: action.payload
     }),
     [RECIPE_CREATE_REQUEST_SUCCESS]: (state, _action) => ({
         ...state
     }),
-    [RECIPE_READ_REQUEST_SUCCESS]: (state, _action) => ({
-        ...state
+    [RECIPE_READ_REQUEST_SUCCESS]: (state, action) => ({
+        ...state,
+        data: action.payload
     }),
     [RECIPE_UPDATE_REQUEST_SUCCESS]: (state, _action) => ({
         ...state
