@@ -1,6 +1,5 @@
 import db from '../models/index.js'
 import https from 'https';
-import http from 'http';
 
 export default function deepBrainApiService() {
     let token = '';
@@ -27,12 +26,14 @@ export default function deepBrainApiService() {
     let currentProject = {progress: false};
 
     const requestPromise = (collback, reqData, body = null) => {
+        console.log(body);
         const promise = new Promise((resolve, reject) => {
             const response = https.request(reqData, (getRes) => {
-                // console.log(`statusCode: ${getRes.statusCode}`); console.log(`HEADERS:
-                // ${JSON.stringify(getRes.headers)}`);
+                console.log(`statusCode: ${getRes.statusCode}`); 
+                console.log(`HEADERS:${JSON.stringify(getRes.headers)}`);
                 getRes.on('data', (chunk) => {
                     const data = JSON.parse(chunk);
+                    console.log(data);
                     collback(data, resolve, reject);
                 });
                 getRes.on('end', () => {
@@ -43,7 +44,7 @@ export default function deepBrainApiService() {
             if (body !== null) response.write(JSON.stringify(body));
             response.on('error', (e) => {
                 console.error(`problem with request: ${e.message}`);
-                reject();
+                reject(e);
             });
             response.end();
         });

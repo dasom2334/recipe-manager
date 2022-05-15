@@ -1,9 +1,6 @@
 import db from '../models/index.js'
-
 export default function UserService() {
-
     const User = db.User
-
     return {
         join(req, res) {
             new User(req.body).save(function (err) {

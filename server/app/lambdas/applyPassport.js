@@ -6,10 +6,11 @@ const applyPassport = (passport, _secretOrKey) => {
         secretOrKey: _secretOrKey
     };
     const verifyUser = async (jwt_payload, done) => {
-        // console.log(jwt_payload)
         const user = await db
             .User
             .findById(jwt_payload).exec();
+        console.log(jwt_payload);
+        console.log(user);
         done(null, user);
     }
     passport.use(new Strategy(jwtOptions, verifyUser));

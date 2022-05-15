@@ -11,7 +11,7 @@ import {HYDRATE} from "next-redux-wrapper"
 import axios from 'axios'
 import { createBrowserHistory } from 'history'
 
-import {SERVER, headers} from "@/modules/auth/server"
+import {SERVER, headers} from "@/modules/server"
 export const initialState = {
     loginUser: null,
     isLoggined: false,

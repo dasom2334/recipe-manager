@@ -4,7 +4,7 @@ import passport from 'passport'
 import UserService from '../services/userService.js'
 const mongoUri = process.env.MONGO_URI
 const port = process.env.PORT
-const jwtSecret = process.env.JWT_SECERT
+const jwtSecret = process.env.JWT_SECRET
 const origin = process.env.ORIGIN
 const corsOptions = {
     origin: process.env.ORIGIN,
@@ -25,22 +25,9 @@ app.post('/join', cors(corsOptions), (req, res) => {
 app.post('/login', cors(corsOptions), (req, res) => {
     UserService().login(req, res);
 })
-import applyToken from '../lambdas/applyToken.js'
-// import VerifyToken from '../route/VerifyToken.js'
 app.get('/logout', 
 passport.authenticate('jwt', {session: false}),
 async (req, res, next) => {
-    try {
-    } catch (error) {
-      console.error(error);
-      next(error);
-    }
-    console.log('hihi')
-    console.log(req.headers);
-    console.log(req.header);
-    console.log(applyToken(req.headers))
-    // console.log(VerifyToken(res, res, next))
-    // console.log(' logout 진입 ')
     UserService().logout(req, res);
 });
 export default app

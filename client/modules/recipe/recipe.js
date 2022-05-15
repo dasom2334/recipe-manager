@@ -1,17 +1,15 @@
 import {createAction, handleActions} from 'redux-actions';
 import {call, put, takeLatest} from 'redux-saga/effects';
 import {HYDRATE} from "next-redux-wrapper"
+import {SERVER, headers} from "@/modules/server"
 
 import axios from 'axios'
-export const initialState = {
-    isRegistered: false
-}
+export const initialState = {}
 
 const RECIPE_CREATE_REQUEST = 'recipe/RECIPE_CREATE_REQUEST';
 const RECIPE_READ_REQUEST = 'recipe/RECIPE_READ_REQUEST';
 const RECIPE_UPDATE_REQUEST = 'recipe/RECIPE_UPDATE_REQUEST';
 const RECIPE_DELETE_REQUEST = 'recipe/RECIPE_DELETE_REQUEST';
-
 
 const RECIPE_CREATE_REQUEST_SUCCESS = 'recipe/RECIPE_CREATE_REQUEST_SUCCESS';
 const RECIPE_READ_REQUEST_SUCCESS = 'recipe/RECIPE_READ_REQUEST_SUCCESS';
@@ -23,11 +21,23 @@ const RECIPE_READ_REQUEST_FAILURE = 'recipe/RECIPE_READ_REQUEST_FAILURE';
 const RECIPE_UPDATE_REQUEST_FAILURE = 'recipe/RECIPE_UPDATE_REQUEST_FAILURE';
 const RECIPE_DELETE_REQUEST_FAILURE = 'recipe/RECIPE_DELETE_REQUEST_FAILURE';
 
-export const recipeAddRequest = createAction(RECIPE_CREATE_REQUEST, data => data)
-export const recipeReadRequest = createAction(RECIPE_READ_REQUEST, data => data)
-export const recipeUpdateRequest = createAction(RECIPE_UPDATE_REQUEST, data => data)
-export const recipeDeleteRequest = createAction(RECIPE_DELETE_REQUEST, data => data)
-export function* recipe() {
+export const recipeAddRequest = createAction(
+    RECIPE_CREATE_REQUEST,
+    data => data
+)
+export const recipeReadRequest = createAction(
+    RECIPE_READ_REQUEST,
+    data => data
+)
+export const recipeUpdateRequest = createAction(
+    RECIPE_UPDATE_REQUEST,
+    data => data
+)
+export const recipeDeleteRequest = createAction(
+    RECIPE_DELETE_REQUEST,
+    data => data
+)
+export function* recipeSaga() {
     yield takeLatest(RECIPE_CREATE_REQUEST, createRecipe);
     yield takeLatest(RECIPE_READ_REQUEST, readRecipe);
     yield takeLatest(RECIPE_UPDATE_REQUEST, updateRecipe);
@@ -35,7 +45,9 @@ export function* recipe() {
 }
 function* createRecipe(action) {
     try {
+        console.log('hihi22');
         const response = yield call(recipeCreateAPI, action.payload)
+        console.log(response);
         yield put({type: RECIPE_CREATE_REQUEST_SUCCESS, payload: response.data})
         yield put((window.location.href = "/recipe"));
     } catch (error) {
@@ -44,7 +56,12 @@ function* createRecipe(action) {
 }
 function* readRecipe(action) {
     try {
-        const response = yield call((action.payload.id)?recipeReadAPI:recipesReadAPI, action.payload)
+        const response = yield call(
+            (action.payload.id)
+                ? recipeReadAPI
+                : recipesReadAPI,
+            action.payload
+        )
         yield put({type: RECIPE_READ_REQUEST_SUCCESS, payload: response.data})
     } catch (error) {
         yield put({type: RECIPE_READ_REQUEST_FAILURE, payload: error.message})
@@ -69,29 +86,58 @@ function* deleteRecipe(action) {
     }
 }
 
-const recipeCreateAPI = payload => axios.post(
-    `${SERVER}/recipe`,
-    payload,
-    {headers}
-)
-const recipeReadAPI = payload => axios.get(`${SERVER}/recipe/${payload.id}`, {}, {headers})
-const recipesReadAPI = payload => axios.get(`${SERVER}/recipe`, {}, {headers})
-const recipeUpdateAPI = payload => axios.post(
-    `${SERVER}/recipe/${payload.id}`,
-    payload,
-    {headers}
-)
-const recipeDeleteAPI = payload => axios.delete(
-    `${SERVER}/recipe/${payload.id}`,
-    payload,
-    {headers}
-)
-const register = handleActions({
+const recipeCreateAPI = payload => {
+    const user = JSON.parse(localStorage.getItem("loginUser"));
+    console.log(user.token);
+    return axios.post(`${SERVER}/recipe`, payload, {
+        headers: {
+            ...headers,
+            Authorization: "Bearer " + user.token
+        }
+    })
+}
+const recipeReadAPI = payload => {
+    const user = JSON.parse(localStorage.getItem("loginUser"));
+    return axios.get(`${SERVER}/recipe/${payload.id}`, {
+        headers: {
+            ...headers,
+            Authorization: "Bearer " + user.token
+        }
+    })
+}
+const recipesReadAPI = payload => {
+    const user = JSON.parse(localStorage.getItem("loginUser"));
+    return axios.get(`${SERVER}/recipe`, {
+        headers: {
+            ...headers,
+            Authorization: "Bearer " + user.token
+        }
+    })
+}
+const recipeUpdateAPI = payload => {
+    const user = JSON.parse(localStorage.getItem("loginUser"));
+    return axios.post(`${SERVER}/recipe/${payload.id}`, payload, {
+        headers: {
+            ...headers,
+            Authorization: "Bearer " + user.token
+        }
+    })
+}
+const recipeDeleteAPI = payload => {
+    const user = JSON.parse(localStorage.getItem("loginUser"));
+    return axios.delete(`${SERVER}/recipe/${payload.id}`, payload, {
+        headers: {
+            ...headers,
+            Authorization: "Bearer " + user.token
+        }
+    })
+}
+const recipe = handleActions({
     [HYDRATE]: (state, action) => ({
         ...state,
         payload: action.payload
     }),
-    [RECIPE_CREATE_REQUEST]: (state, _action) => ({
+    [RECIPE_CREATE_REQUEST]: (state, action) => ({
         ...state,
         payload: action.payload
     }),
@@ -108,29 +154,29 @@ const register = handleActions({
         payload: action.payload
     }),
     [RECIPE_CREATE_REQUEST_SUCCESS]: (state, _action) => ({
-        ...state,
+        ...state
     }),
     [RECIPE_READ_REQUEST_SUCCESS]: (state, _action) => ({
-        ...state,
+        ...state
     }),
     [RECIPE_UPDATE_REQUEST_SUCCESS]: (state, _action) => ({
-        ...state,
+        ...state
     }),
     [RECIPE_DELETE_REQUEST_SUCCESS]: (state, _action) => ({
-        ...state,
+        ...state
     }),
     [RECIPE_CREATE_REQUEST_FAILURE]: (state, _action) => ({
-        ...state,
+        ...state
     }),
     [RECIPE_READ_REQUEST_FAILURE]: (state, _action) => ({
-        ...state,
+        ...state
     }),
     [RECIPE_UPDATE_REQUEST_FAILURE]: (state, _action) => ({
-        ...state,
+        ...state
     }),
     [RECIPE_DELETE_REQUEST_FAILURE]: (state, _action) => ({
-        ...state,
-    }),
+        ...state
+    })
 }, initialState)
 
-export default register
+export default recipe

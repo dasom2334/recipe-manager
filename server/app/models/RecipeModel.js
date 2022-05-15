@@ -18,15 +18,15 @@ export default function RecipeModel(mongoose) {
                 seasoning_unit: String
             }
         ],
-
         cooking_steps: [
             {
                 step_description: String,
                 step_timer: Number,
                 image: String,
-                deepbrain_path: String,
+                step_video_path: String,
             }
         ],
+        materials_video_path: String,
         status:String
     }, {timestamps: true});
     return mongoose.model("recipe", recipeSchema);

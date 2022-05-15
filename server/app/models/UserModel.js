@@ -82,15 +82,6 @@ export default function UserModel(mongoose) {
             cb(null, user)
         })
     },
-    userSchema.methods.destroyToken = function (cb) {
-        var user = this;
-        user.token = ''
-        user.save(function (err, user) {
-            if (err) 
-                return cb(err);
-            cb(null, user)
-        })
-    },
     userSchema.statics.findByToken = function (token, cb) {
         var user = this;
 

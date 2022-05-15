@@ -7,6 +7,7 @@ import db from './app/models/index.js'
 // import basic from "./app/routes/basic.js"
 import users from "./app/routes/users.js"
 import index from "./app/routes/index.js"
+import recipes from "./app/routes/recipes.js"
 import getResponse from "./app/lambdas/getResponse.js"
 import applyPassport from './app/lambdas/applyPassport.js'
 import applyDotenv from './app/lambdas/applyDotenv.js'
@@ -24,6 +25,7 @@ async function startServer() {
     // app.use("/api", api);
     // app.use("/basic", basic);
     app.use("/user", users);
+    app.use("/recipe", recipes);
     app.use(morgan('dev'))
     db
         .mongoose

@@ -3,7 +3,7 @@ import {call, put, takeLatest} from 'redux-saga/effects';
 
 import {HYDRATE} from "next-redux-wrapper"
 import axios from 'axios'
-import {SERVER, headers} from "@/modules/auth/server"
+import {SERVER, headers} from "@/modules/server"
 //https://stackoverflow.com/questions/55869455/create-action-with-payload
 export const initialState = {
     isRegistered: false

@@ -1,4 +1,5 @@
 import express from "express"
+import passport from 'passport'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import RecipeService from '../services/recipeService.js'
@@ -16,15 +17,18 @@ app.use(function (_req, res, next) {
     );
     next();
 });
-app.get('/', cors(corsOptions), (req, res) => {
+app.get('/', cors(corsOptions), passport.authenticate('jwt', {session: false}), (req, res) => {
     RecipeService().getRecipes(req, res)
 });
 
-app.get('/:id', cors(corsOptions), (req, res) => {
+app.get('/:id', cors(corsOptions), passport.authenticate('jwt', {session: false}), (req, res) => {
     RecipeService().getRecipeById(req, res)
 });
 
-app.post(['/', '/new'], cors(corsOptions), passport.authenticate('jwt', {session: false}), (req, res) => {
+app.post(['/', '/new'], cors(corsOptions), 
+passport.authenticate('jwt', {session: false}), 
+(req, res) => {
+    console.log('hihihihihihi')
     RecipeService().create(req, res)
 });
 
