@@ -4,9 +4,11 @@
 ```bash
 docker-compose up -d
 cd server
+npm install
 npm start
 
 cd ../client
+npm install
 npm run build
 npm start
 ```
