@@ -1,0 +1,11 @@
+{
+  "extends": ["next/babel","next/core-web-vitals"],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"],
+        "moduleDirectory": ["node_modules", "src/"]
+      }
+    }
+  }
+}
