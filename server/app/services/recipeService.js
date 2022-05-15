@@ -8,7 +8,7 @@ export default function RedipeService() {
     const Recipe = db.Recipe;
     const generateVideo = async (text, req, res) => {
         const term = 3000;
-        let limit = 20;
+        let limit = 0;
         let isGenerated = false;
         const deepBrainApi = new deepBrainApiService();
         await deepBrainApi.generateClientToken(req, res);
@@ -24,7 +24,7 @@ export default function RedipeService() {
             console.log('current progress: ', current);
             await deepBrainApi.findProject(req, res);
             await new Promise(r => setTimeout(r, term));
-            // limit--;
+            limit--;
         }
         if (isGenerated) {
             return deepBrainApi.getVideo();
@@ -142,7 +142,8 @@ export default function RedipeService() {
                 });
         },
         async update(req, res) {
-            console.log('???')
+            // console.log('???')
+            // console.log(req.body);
             const {id} = req.params;
 
             let recipe = await Recipe
@@ -162,6 +163,7 @@ export default function RedipeService() {
                 status: req.body.status
             };
             console.log(recipe)
+            console.log('----2')
             let needUpdateMaterial = false;
             let needUpdateSteps = matchDocument.cooking_steps.map((e, i) => {
                 return recipe.cooking_steps[i].step_description !== matchDocument.cooking_steps[i].step_description
@@ -182,7 +184,7 @@ export default function RedipeService() {
                         .entries(req.body.cooking_seasoning)
                         .map(e => e.seasoning_name)} 입니다.
                     `;
-                    console.log(materials_video_text);
+                    // console.log(materials_video_text);
                     materials_video_path = await generateVideo(materials_video_text, req, res);
                 }
                 cooking_steps = await Promise.all(req.body.cooking_steps.map((e, i) => {
@@ -198,7 +200,7 @@ export default function RedipeService() {
                 isErrored = true;
                 console.log(e);
             }
-            console.log('cooking_steps:', cooking_steps)
+            // console.log('cooking_steps:', cooking_steps)
             // materials_video_path
             if (!isErrored) {
                 matchDocument.cooking_steps = matchDocument
@@ -213,9 +215,14 @@ export default function RedipeService() {
             } else {
                 matchDocument.status = 'ERROR';
             }
+            console.log('----');
             console.log(req.body);
+            console.log('----');
             console.log(matchDocument);
-            new Recipe(matchDocument).save(function (err) {
+            console.log('----');
+            recipe.overwrite(matchDocument).save(function (err) {
+            // new Recipe(matchDocument).save(function (err) {
+                console.log(err)
                 if (err) {
                     res
                         .status(500)
