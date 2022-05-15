@@ -1,12 +1,10 @@
 import { useSelector, useDispatch } from "react-redux";
 import { EyeSVG, PencilSVG, TrashSVG } from "@/icons";
-import { useEffect } from "react";
+import {recipeDeleteRequest} from '@/modules/recipe/recipe';
 
 export function List(list) {
-  console.log(list.list);
-  console.log(typeof list);
-  console.log(typeof list.list);
-	return (
+    const dispatch = useDispatch()
+    return (
 		<table className="table">
 			<thead className="table__head">
 				<tr>
@@ -37,7 +35,7 @@ export function List(list) {
 							<button
 								className="btn btn__compact btn__delete"
 								onClick={() => {
-									// dispatch(deleteEmployee(_id));
+                  dispatch(recipeDeleteRequest(_id));
 								}}
 							>
 								<TrashSVG />

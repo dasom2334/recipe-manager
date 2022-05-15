@@ -31,11 +31,11 @@ app.delete('/:id', cors(corsOptions), passport.authenticate('jwt', {session: fal
 app.post(['/', '/new'], cors(corsOptions), 
 passport.authenticate('jwt', {session: false}), 
 (req, res) => {
-    console.log('hihihihihihi')
     RecipeService().create(req, res)
 });
 
-app.post(':id', cors(corsOptions), passport.authenticate('jwt', {session: false}), (req, res) => {
+app.post('/:id', cors(corsOptions), passport.authenticate('jwt', {session: false}), (req, res) => {
+    // console.log(req.headers);
     RecipeService().update(req, res)
 });
 

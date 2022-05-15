@@ -64,7 +64,6 @@ function* readRecipe(action) {
     } catch (error) {
         yield put({type: RECIPE_READ_REQUEST_FAILURE, payload: error.message})
     }
-    console.log('hi')
 }
 function* updateRecipe(action) {
     try {
@@ -114,7 +113,8 @@ const recipesReadAPI = () => {
 }
 const recipeUpdateAPI = payload => {
     const user = JSON.parse(localStorage.getItem("loginUser"));
-    return axios.post(`${SERVER}/recipe/${payload.id}`, payload, {
+    console.log(payload);
+    return axios.post(`${SERVER}/recipe/${payload._id}`, payload, {
         headers: {
             ...headers,
             Authorization: "Bearer " + user.token
@@ -123,7 +123,7 @@ const recipeUpdateAPI = payload => {
 }
 const recipeDeleteAPI = payload => {
     const user = JSON.parse(localStorage.getItem("loginUser"));
-    return axios.delete(`${SERVER}/recipe/${payload.id}`, payload, {
+    return axios.delete(`${SERVER}/recipe/${payload}`, {
         headers: {
             ...headers,
             Authorization: "Bearer " + user.token

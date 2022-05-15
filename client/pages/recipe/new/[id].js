@@ -75,6 +75,7 @@ const RecipePage = () => {
     const onSubmit = e => {
         e.preventDefault()
         const sendRecipe = {
+            ...data,
             ...recipe,
             cooking_ingredients: [...ingredient],
             cooking_seasoning: [...seasoning],

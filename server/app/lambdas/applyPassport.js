@@ -9,8 +9,6 @@ const applyPassport = (passport, _secretOrKey) => {
         const user = await db
             .User
             .findById(jwt_payload).exec();
-        console.log(jwt_payload);
-        console.log(user);
         done(null, user);
     }
     passport.use(new Strategy(jwtOptions, verifyUser));

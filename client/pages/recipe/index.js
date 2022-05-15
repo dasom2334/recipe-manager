@@ -9,7 +9,7 @@ const recipeIndex = ({}) => {
 		dispatch(recipeReadRequest({id:null}));
 	}, [dispatch]);
 	const data = useSelector((state) => {
-        console.log(state);
+        // console.log(state);
         return state.recipe.data
     });
     return (

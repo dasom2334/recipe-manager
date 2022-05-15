@@ -42,7 +42,7 @@ function* signin(action) {
     try {
         const response = yield call(loginAPI, action.payload);
         const result = response.data;
-        console.log(" 로그인 서버다녀옴: " + JSON.stringify(result));
+        // console.log(" 로그인 서버다녀옴: " + JSON.stringify(result));
         localStorage.setItem("loginUser", JSON.stringify(result));
         yield put({type: LOGIN_SUCCESS, payload: result});
         yield put({type: SAVE_TOKEN, payload: result.token});
@@ -62,12 +62,12 @@ function* logout(user){
     try{
         const response = yield call(logoutAPI);
         // const result = response.data;
-        console.log(response);
+        // console.log(response);
         yield put({type: LOGOUT_SUCCESS});
         yield put({type: DELETE_TOKEN});
         localStorage.clear();
     } catch(error) {
-        console.log(` 로그아웃 실패: ${error}`)
+        // console.log(` 로그아웃 실패: ${error}`)
         yield put({type: LOGOUT_FAILURE})
     }
 }

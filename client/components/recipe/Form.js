@@ -17,8 +17,6 @@ import Head from 'next/head';
 const theme = createTheme();
 
 export function Form({onChange, onSubmit, recipe}) {
-    console.log(recipe);
-    console.log(recipe === undefined);
     return (
         <ThemeProvider theme={theme}>
             <Head>
@@ -71,7 +69,7 @@ export function Form({onChange, onSubmit, recipe}) {
                                     fullWidth="fullWidth"
                                     id="recipe_name"
                                     label="이름"
-                                    value={(recipe !== undefined)?recipe.recipe_name:null}
+                                    defaultValue={(recipe !== undefined)?recipe.recipe_name:null}
                                     autoFocus="autoFocus"
                                     onChange={onChange}/>
                             </Grid>
@@ -83,7 +81,7 @@ export function Form({onChange, onSubmit, recipe}) {
                                     fullWidth="fullWidth"
                                     id="per_person"
                                     label="인분 수"
-                                    value={(recipe !== undefined)?recipe.per_person:null}
+                                    defaultValue={(recipe !== undefined)?recipe.per_person:null}
                                     autoFocus="autoFocus"
                                     onChange={onChange}/>
                             </Grid>
@@ -94,7 +92,7 @@ export function Form({onChange, onSubmit, recipe}) {
                                     id="cooking_time"
                                     label="소요시간"
                                     name="cooking_time"
-                                    value={(recipe !== undefined)?recipe.cooking_time:null}
+                                    defaultValue={(recipe !== undefined)?recipe.cooking_time:null}
                                     autoComplete="family-name"
                                     onChange={onChange}/>
                             </Grid>
