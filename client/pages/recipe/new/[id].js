@@ -51,16 +51,19 @@ const RecipePage = () => {
         switch(elem[0]) {
             case 'cooking_ingredient':
                 const temp1 = ingredient.slice();
+                if (temp1[elem[1]] === undefined) temp1[elem[1]] = {};
                 temp1[elem[1]][elem[2]] = value;
                 setIngredient(temp1)
                 break;
             case 'cooking_seasoning':
                 const temp2 = seasoning.slice();
+                if (temp2[elem[1]] === undefined) temp2[elem[1]] = {};
                 temp2[elem[1]][elem[2]] = value;
                 setSeasoning(temp2)
                 break;
             case 'cooking_step':
                 const temp3 = step.slice();
+                if (temp3[elem[1]] === undefined) temp3[elem[1]] = {};
                 temp3[elem[1]][elem[2]] = value;
                 setStep(temp3)
                 break;

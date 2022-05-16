@@ -32,9 +32,16 @@ export default function deepBrainApiService() {
                 console.log(`statusCode: ${getRes.statusCode}`); 
                 console.log(`HEADERS:${JSON.stringify(getRes.headers)}`);
                 getRes.on('data', (chunk) => {
-                    const data = JSON.parse(chunk);
-                    console.log(data);
-                    collback(data, resolve, reject);
+                    try {
+                        const data = JSON.parse(chunk);
+                        console.log(data);
+                        collback(data, resolve, reject);
+                    } catch (e) {
+                        console.log(chunk);
+                        // console.log(chunk.toString());
+                        console.log(e);
+                        reject(e);
+                    }
                 });
                 getRes.on('end', () => {
                     // console.log('No more data in response.');

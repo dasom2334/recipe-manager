@@ -8,7 +8,7 @@ export default function RedipeService() {
     const Recipe = db.Recipe;
     const generateVideo = async (text, req, res) => {
         const term = 3000;
-        let limit = 0;
+        let limit = 30;
         let isGenerated = false;
         const deepBrainApi = new deepBrainApiService();
         await deepBrainApi.generateClientToken(req, res);
@@ -24,16 +24,30 @@ export default function RedipeService() {
             console.log('current progress: ', current);
             await deepBrainApi.findProject(req, res);
             await new Promise(r => setTimeout(r, term));
-            limit--;
+            // limit--;
         }
         if (isGenerated) {
-            return deepBrainApi.getVideo();
+            const {video} = deepBrainApi.getVideo();
+            return video;
         } else {
             throw new Error('Video not generated.')
         }
     }
-
-    // const patchRecipe() { }
+    const generateMaterialText = (req) => {
+        return `
+        이번 요리는 ${req
+            .body
+            .recipe_name}입니다.
+        요리 재료는 ${req
+            .body
+            .cooking_ingredients
+            .map(e => e.ingredient_name)},
+        양념 재료는 ${req
+            .body
+            .cooking_seasoning
+            .map(e => e.seasoning_name)} 입니다.
+    `;
+    }
     return {
         async create(req, res) {
             const userid = jwt.verify(applyToken(req.headers), process.env.JWT_SECRET);
@@ -48,49 +62,39 @@ export default function RedipeService() {
                 cooking_steps: req.body.cooking_steps,
                 status: req.body.status
             };
-            const materials_video_text = `
-                이번 요리는 ${req
-                .body
-                .recipe_name}입니다.
-                요리 재료는 ${Object
-                .entries(req.body.cooking_ingredients)
-                .map(e => e.ingredients_name)},
-                양념 재료는 ${Object
-                .entries(req.body.cooking_seasoning)
-                .map(e => e.seasoning_name)} 입니다.
-            `;
-            let cooking_steps = [];
-            let materials_video_path = '';
-            console.log(materials_video_text);
+            const materials_video_text = generateMaterialText(req);
+            let promises = [];
+            // let materials_video_path = '';
             try {
-                materials_video_path = await generateVideo(materials_video_text, req, res);
-
-                cooking_steps = await Promise.all(req.body.cooking_steps.map(e => {
+                // materials_video_path = generateVideo(materials_video_text, req, res);
+                const materials_video_path = generateVideo(materials_video_text, req, res);
+                const cooking_steps = req.body.cooking_steps.map(e => {
                     // const path = generateVideo('테스트디스크립션', req, res);
-                    const path = generateVideo(e.step_description, req, res);
-                    return path;
-                }));
+                    return generateVideo(e.step_description, req, res);
+                })
+                promises = await Promise.all([...cooking_steps, materials_video_path]);
             } catch (e) {
                 isErrored = true;
                 console.log(e);
             }
-            console.log('cooking_steps:', cooking_steps)
+            // console.log('cooking_steps:', cooking_steps)
             // materials_video_path
             if (!isErrored) {
+                matchDocument.materials_video_path = promises.pop();
+                // matchDocument.materials_video_path = materials_video_path;
                 matchDocument.cooking_steps = matchDocument
                     .cooking_steps
                     .map((e, i) => {
                         return {
                             ...e,
-                            step_video_path: cooking_steps[i]
+                            step_video_path: promises[i]
                         }
                     })
-                matchDocument.materials_video_path = materials_video_path;
+                matchDocument.status = 'VISIBLE';
             } else {
                 matchDocument.status = 'ERROR';
             }
-            // console.log(req.body);
-            // console.log(matchDocument);
+            // console.log(req.body); console.log(matchDocument);
             new Recipe(matchDocument).save(function (err) {
                 if (err) {
                     res
@@ -142,8 +146,7 @@ export default function RedipeService() {
                 });
         },
         async update(req, res) {
-            // console.log('???')
-            // console.log(req.body);
+            // console.log('???') console.log(req.body);
             const {id} = req.params;
 
             let recipe = await Recipe
@@ -153,7 +156,7 @@ export default function RedipeService() {
             let matchDocument = {
                 ...recipe,
                 _id: recipe.id,
-                userid:recipe.userid,
+                userid: recipe.userid,
                 recipe_name: req.body.recipe_name,
                 per_person: req.body.per_person,
                 cooking_time: req.body.cooking_time,
@@ -163,78 +166,84 @@ export default function RedipeService() {
                 status: req.body.status
             };
             console.log(recipe)
-            console.log('----2')
             let needUpdateMaterial = false;
-            let needUpdateSteps = matchDocument.cooking_steps.map((e, i) => {
-                return recipe.cooking_steps[i].step_description !== matchDocument.cooking_steps[i].step_description
-            }); 
-            
-            let cooking_steps = [];
-            let materials_video_path = '';
-            try {
-                if (needUpdateMaterial) {
-                    const materials_video_text = `
-                        이번 요리는 ${req
-                        .body
-                        .recipe_name}입니다.
-                        요리 재료는 ${Object
-                        .entries(req.body.cooking_ingredients)
-                        .map(e => e.ingredients_name)},
-                        양념 재료는 ${Object
-                        .entries(req.body.cooking_seasoning)
-                        .map(e => e.seasoning_name)} 입니다.
-                    `;
-                    // console.log(materials_video_text);
-                    materials_video_path = await generateVideo(materials_video_text, req, res);
+            if (recipe.recipe_name !== req.body.recipe_name) 
+                needUpdateMaterial = true;
+            req.body.cooking_ingredients.forEach((e, i) => {
+                if (e.ingredient_name !== recipe.cooking_ingredients[i].ingredient_name)  
+                    needUpdateMaterial = true;
+            });
+            req.body.cooking_seasoning.forEach((e, i) => {
+                if (e.seasoning_name !== recipe.cooking_seasoning[i].seasoning_name)
+                    needUpdateMaterial = true;
+            });
+            let needUpdateSteps = matchDocument
+                .cooking_steps
+                .map((e, i) => {
+                    return recipe
+                        .cooking_steps[i]
+                        .step_description !== matchDocument
+                        .cooking_steps[i]
+                        .step_description
+                });
+
+            let promises = [];
+            let materials_video_path = recipe.materials_video_path;
+
+            if (needUpdateMaterial) {
+                const materials_video_text = generateMaterialText(req);
+                materials_video_path = generateVideo(materials_video_text, req, res);
+            }
+            const cooking_steps = req.body.cooking_steps.map((e, i) => {
+                if (needUpdateSteps[i]) {
+                    // const path = generateVideo('테스트디스크립션', req, rnpm starses);
+                    const path = generateVideo(e.step_description, req, res);
+                    return path;
+                } else {
+                    return recipe
+                        .cooking_steps[i]
+                        .step_video_path;
                 }
-                cooking_steps = await Promise.all(req.body.cooking_steps.map((e, i) => {
-                    if (needUpdateSteps[i]) {
-                        // const path = generateVideo('테스트디스크립션', req, rnpm starses);
-                        const path = generateVideo(e.step_description, req, res);
-                        return path;
-                    } else {
-                        return recipe.cooking_steps[i].step_video_path;
-                    }
-            }));
+            })
+            try {
+                promises = await Promise.all([...cooking_steps, materials_video_path]);
             } catch (e) {
                 isErrored = true;
                 console.log(e);
             }
-            // console.log('cooking_steps:', cooking_steps)
-            // materials_video_path
+            // console.log('cooking_steps:', cooking_steps) materials_video_path
             if (!isErrored) {
+                matchDocument.materials_video_path = promises.pop();
+                // matchDocument.materials_video_path = materials_video_path;
                 matchDocument.cooking_steps = matchDocument
                     .cooking_steps
                     .map((e, i) => {
                         return {
                             ...e,
-                            step_video_path: cooking_steps[i]
+                            step_video_path: promises[i]
                         }
                     })
-                matchDocument.materials_video_path = materials_video_path;
+                matchDocument.status = 'VISIBLE';
             } else {
                 matchDocument.status = 'ERROR';
             }
-            console.log('----');
-            console.log(req.body);
-            console.log('----');
-            console.log(matchDocument);
-            console.log('----');
-            recipe.overwrite(matchDocument).save(function (err) {
-            // new Recipe(matchDocument).save(function (err) {
-                console.log(err)
-                if (err) {
-                    res
-                        .status(500)
-                        .send({message: err});
-                    return;
-                } else {
-                    res
-                        .status(200)
-                        .json({ok: 'ok'})
+            recipe
+                .overwrite(matchDocument)
+                .save(function (err) {
+                    // new Recipe(matchDocument).save(function (err) {
+                    console.log(err)
+                    if (err) {
+                        res
+                            .status(500)
+                            .send({message: err});
+                        return;
+                    } else {
+                        res
+                            .status(200)
+                            .json({ok: 'ok'})
 
-                }
-            });
+                    }
+                });
         },
         delete(req, res) {
             console.log('hihi')

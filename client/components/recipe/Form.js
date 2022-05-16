@@ -61,34 +61,34 @@ export function Form({onChange, onSubmit, recipe}) {
                         <Typography component="h1" variant="h5">
                             기본
                         </Typography>
-                        <Grid container="container" spacing={2}>
-                            <Grid item="item" xs={12}>
+                        <Grid container={true} spacing={2}>
+                            <Grid item={true} xs={12}>
                                 <TextField
                                     name="recipe_name"
-                                    required="required"
-                                    fullWidth="fullWidth"
+                                    required={true}
+                                    fullWidth={true}
                                     id="recipe_name"
                                     label="이름"
                                     defaultValue={(recipe !== undefined)?recipe.recipe_name:null}
-                                    autoFocus="autoFocus"
+                                    autoFocus={true}
                                     onChange={onChange}/>
                             </Grid>
-                            <Grid item="item" xs={12} sm={6}>
+                            <Grid item={true} xs={12} sm={6}>
                                 <TextField
                                     autoComplete="given-name"
                                     name="per_person"
-                                    required="required"
-                                    fullWidth="fullWidth"
+                                    required={true}
+                                    fullWidth={true}
                                     id="per_person"
                                     label="인분 수"
                                     defaultValue={(recipe !== undefined)?recipe.per_person:null}
-                                    autoFocus="autoFocus"
+                                    autoFocus={true}
                                     onChange={onChange}/>
                             </Grid>
-                            <Grid item="item" xs={12} sm={6}>
+                            <Grid item={true} xs={12} sm={6}>
                                 <TextField
-                                    required="required"
-                                    fullWidth="fullWidth"
+                                    required={true}
+                                    fullWidth={true}
                                     id="cooking_time"
                                     label="소요시간"
                                     name="cooking_time"
@@ -100,64 +100,118 @@ export function Form({onChange, onSubmit, recipe}) {
                         <Typography component="h1" variant="h5">
                             기본 재료
                         </Typography>
-                        <Grid container="container" spacing={2}>
-                            <Grid item="item" xs={4}>
+                        <Grid container={true} spacing={2}>
+                            <Grid item={true} xs={4}>
                                 <TextField
-                                    required="required"
-                                    fullWidth="fullWidth"
+                                    required={true}
+                                    fullWidth={true}
                                     id="cooking_ingredient-0-ingredient_name"
                                     label="기본 재료명"
                                     name="cooking_ingredient.0.ingredient_name"
                                     onChange={onChange}/>
                             </Grid>
-                            <Grid item="item" xs={4}>
+                            <Grid item={true} xs={4}>
                                 <TextField
-                                    required="required"
-                                    fullWidth="fullWidth"
+                                    required={true}
+                                    fullWidth={true}
                                     id="cooking_ingredient-0-ingredient_amount"
                                     label="기본 재료 수"
                                     name="cooking_ingredient.0.ingredient_amount"
                                     onChange={onChange}/>
                             </Grid>
-                            <Grid item="item" xs={4}>
+                            <Grid item={true} xs={4}>
                                 <TextField
-                                    required="required"
-                                    fullWidth="fullWidth"
+                                    required={true}
+                                    fullWidth={true}
                                     id="cooking_ingredient-0-ingredient_unit"
                                     label="기본 재료 단위"
                                     name="cooking_ingredient.0.ingredient_unit"
+                                    onChange={onChange}/>
+                            </Grid>
+                            <Grid item={true} xs={4}>
+                                <TextField
+                                    required={true}
+                                    fullWidth={true}
+                                    id="cooking_ingredient-1-ingredient_name"
+                                    label="기본 재료명"
+                                    name="cooking_ingredient.1.ingredient_name"
+                                    onChange={onChange}/>
+                            </Grid>
+                            <Grid item={true} xs={4}>
+                                <TextField
+                                    required={true}
+                                    fullWidth={true}
+                                    id="cooking_ingredient-1-ingredient_amount"
+                                    label="기본 재료 수"
+                                    name="cooking_ingredient.1.ingredient_amount"
+                                    onChange={onChange}/>
+                            </Grid>
+                            <Grid item={true} xs={4}>
+                                <TextField
+                                    required={true}
+                                    fullWidth={true}
+                                    id="cooking_ingredient-1-ingredient_unit"
+                                    label="기본 재료 단위"
+                                    name="cooking_ingredient.1.ingredient_unit"
                                     onChange={onChange}/>
                             </Grid>
                         </Grid>
                         <Typography component="h1" variant="h5">
                             양념 재료
                         </Typography>
-                        <Grid container="container" spacing={2}>
-                            <Grid item="item" xs={4}>
+                        <Grid container={true} spacing={2}>
+                            <Grid item={true} xs={4}>
                                 <TextField
-                                    required="required"
-                                    fullWidth="fullWidth"
+                                    required={true}
+                                    fullWidth={true}
                                     id="cooking_seasoning-0-seasoning_name"
                                     label="양념 재료 이름"
                                     name="cooking_seasoning.0.seasoning_name"
                                     onChange={onChange}/>
                             </Grid>
-                            <Grid item="item" xs={4}>
+                            <Grid item={true} xs={4}>
                                 <TextField
-                                    required="required"
-                                    fullWidth="fullWidth"
+                                    required={true}
+                                    fullWidth={true}
                                     id="cooking_seasoning-0-seasoning_amount"
                                     label="양념 재료 양"
                                     name="cooking_seasoning.0.seasoning_amount"
                                     onChange={onChange}/>
                             </Grid>
-                            <Grid item="item" xs={4}>
+                            <Grid item={true} xs={4}>
                                 <TextField
-                                    required="required"
-                                    fullWidth="fullWidth"
+                                    required={true}
+                                    fullWidth={true}
                                     id="cooking_seasoning-0-seasoning_unit"
                                     label="양념 재료 단위"
                                     name="cooking_seasoning.0.seasoning_unit"
+                                    onChange={onChange}/>
+                            </Grid>
+                            <Grid item={true} xs={4}>
+                                <TextField
+                                    required={true}
+                                    fullWidth={true}
+                                    id="cooking_seasoning-1-seasoning_name"
+                                    label="양념 재료 이름"
+                                    name="cooking_seasoning.1.seasoning_name"
+                                    onChange={onChange}/>
+                            </Grid>
+                            <Grid item={true} xs={4}>
+                                <TextField
+                                    required={true}
+                                    fullWidth={true}
+                                    id="cooking_seasoning-1-seasoning_amount"
+                                    label="양념 재료 양"
+                                    name="cooking_seasoning.1.seasoning_amount"
+                                    onChange={onChange}/>
+                            </Grid>
+                            <Grid item={true} xs={4}>
+                                <TextField
+                                    required={true}
+                                    fullWidth={true}
+                                    id="cooking_seasoning-1-seasoning_unit"
+                                    label="양념 재료 단위"
+                                    name="cooking_seasoning.1.seasoning_unit"
                                     onChange={onChange}/>
                             </Grid>
                         </Grid>
@@ -165,30 +219,66 @@ export function Form({onChange, onSubmit, recipe}) {
                         <Typography component="h1" variant="h5">
                             진행 순서
                         </Typography>
-                        <Grid container="container" spacing={2}>
-                            <Grid item="item" xs={8}>
+                        <Grid container={true} spacing={2}>
+                            <Grid item={true} xs={8}>
                                 <TextField
-                                    required="required"
-                                    fullWidth="fullWidth"
+                                    required={true}
+                                    fullWidth={true}
                                     id="cooking_step-0-step-description"
                                     label="진행 순서 설명"
                                     name="cooking_step.0.step_description"
                                     onChange={onChange}/>
                             </Grid>
-                            <Grid item="item" xs={4}>
+                            <Grid item={true} xs={4}>
                                 <TextField
-                                    required="required"
-                                    fullWidth="fullWidth"
+                                    required={true}
+                                    fullWidth={true}
                                     id="cooking_step-0-step-timer"
                                     label="진행 시간"
                                     name="cooking_step.0.step_timer"
+                                    onChange={onChange}/>
+                            </Grid>
+                            <Grid item={true} xs={8}>
+                                <TextField
+                                    required={true}
+                                    fullWidth={true}
+                                    id="cooking_step-1-step-description"
+                                    label="진행 순서 설명"
+                                    name="cooking_step.1.step_description"
+                                    onChange={onChange}/>
+                            </Grid>
+                            <Grid item={true} xs={4}>
+                                <TextField
+                                    required={true}
+                                    fullWidth={true}
+                                    id="cooking_step-1-step-timer"
+                                    label="진행 시간"
+                                    name="cooking_step.1.step_timer"
+                                    onChange={onChange}/>
+                            </Grid>
+                            <Grid item={true} xs={8}>
+                                <TextField
+                                    required={true}
+                                    fullWidth={true}
+                                    id="cooking_step-2-step-description"
+                                    label="진행 순서 설명"
+                                    name="cooking_step.2.step_description"
+                                    onChange={onChange}/>
+                            </Grid>
+                            <Grid item={true} xs={4}>
+                                <TextField
+                                    required={true}
+                                    fullWidth={true}
+                                    id="cooking_step-2-step-timer"
+                                    label="진행 시간"
+                                    name="cooking_step.2.step_timer"
                                     onChange={onChange}/>
                             </Grid>
                             <hr></hr>
                         </Grid>
                         <Button
                             type="submit"
-                            fullWidth="fullWidth"
+                            fullWidth={true}
                             variant="contained"
                             sx={{
                                 mt: 3,
@@ -196,8 +286,8 @@ export function Form({onChange, onSubmit, recipe}) {
                             }}>
                             전 송
                         </Button>
-                        <Grid container="container" justifyContent="flex-end">
-                            <Grid item="item">
+                        <Grid container={true} justifyContent="flex-end">
+                            <Grid item={true}>
                                 <Link href="/auth/login" variant="body2">
                                     로그인 화면으로 전환
                                 </Link>
